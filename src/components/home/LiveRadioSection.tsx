@@ -10,7 +10,8 @@ import { SacredGeometry } from "@/components/effects";
 import { NOW_PLAYING } from "@/data/mock";
 
 export function LiveRadioSection() {
-  const { togglePlay, isPlaying, currentTrack } = useAudioPlayer();
+  const { togglePlay, isPlaying, currentTrack, liveStreamError } =
+    useAudioPlayer();
   const isLiveActive = isPlaying && currentTrack?.id === LIVE_STREAM_TRACK.id;
 
   return (
@@ -48,14 +49,27 @@ export function LiveRadioSection() {
                 <button
                   onClick={() => togglePlay(LIVE_STREAM_TRACK)}
                   aria-label={isLiveActive ? "Pausar radio" : "Reproducir radio"}
-                  className="relative w-20 h-20 rounded-full border-2 border-[#4A7856] bg-transparent backdrop-blur-sm flex items-center justify-center shadow-lg shadow-[#4A7856]/20 transition-all duration-300 cursor-pointer hover:bg-[#4A7856]/20 hover:shadow-xl hover:shadow-[#4A7856]/25 active:scale-95"
+                  aria-pressed={isLiveActive}
+                  className={`relative w-20 h-20 rounded-full border-2 backdrop-blur-sm flex items-center justify-center shadow-lg transition-all duration-300 cursor-pointer hover:shadow-xl active:scale-95 ${
+                    isLiveActive
+                      ? "border-[#2d5a3a] bg-[#4A7856]/25 text-[#2d5a3a] shadow-[#2d5a3a]/30 hover:bg-[#4A7856]/35"
+                      : "border-[#4A7856] bg-transparent text-[#4A7856] shadow-[#4A7856]/20 hover:bg-[#4A7856]/20 hover:shadow-[#4A7856]/25"
+                  }`}
                 >
                   {isLiveActive ? (
-                    <Pause className="w-9 h-9 text-[#4A7856]" fill="currentColor" />
+                    <Pause className="w-9 h-9" fill="currentColor" />
                   ) : (
-                    <Play className="w-9 h-9 text-[#4A7856] ml-0.5" fill="currentColor" />
+                    <Play className="w-9 h-9 ml-0.5" fill="currentColor" />
                   )}
                 </button>
+                {liveStreamError ? (
+                  <p
+                    className="absolute left-1/2 -translate-x-1/2 top-full mt-3 w-[min(100%,20rem)] text-center text-sm font-medium text-red-700/90 px-2"
+                    role="alert"
+                  >
+                    {liveStreamError}
+                  </p>
+                ) : null}
               </div>
 
               <div className="flex-1 text-center sm:text-left order-1 sm:order-2 min-w-0">
