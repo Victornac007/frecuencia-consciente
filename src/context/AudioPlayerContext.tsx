@@ -43,7 +43,7 @@ const DEFAULT_ARTWORK = "/icon-192.svg";
 
 /** URL por defecto del stream en vivo (no modificar query params). */
 export const LIVE_STREAM_URL =
-  "https://uk18freenew.listen2myradio.com/live.mp3?typeportmount=ice_8206_stream_918745077";
+  "http://187.127.16.214:8000/stream";
 
 const STREAM_UNAVAILABLE_MSG =
   "Stream no disponible, intenta de nuevo.";
