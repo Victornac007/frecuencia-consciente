@@ -20,6 +20,7 @@ export function GlobalPlayer() {
     duration,
     volume,
     isMuted,
+    liveStreamError,
     togglePlay,
     setVolume,
     toggleMute,
@@ -69,19 +70,34 @@ export function GlobalPlayer() {
                 className="hidden sm:flex"
               />
             )}
-            <button
-              onClick={() => togglePlay()}
-              aria-label={isPlaying ? "Pausar" : "Reproducir"}
-              className="w-11 h-11 rounded-full bg-gradient-to-br from-[#34a853] to-[#28873f] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer shrink-0 shadow-md shadow-[#34a853]/35"
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 text-white animate-spin" />
-              ) : isPlaying ? (
-                <Pause className="w-5 h-5 text-white" fill="currentColor" />
-              ) : (
-                <Play className="w-5 h-5 text-white ml-0.5" fill="currentColor" />
-              )}
-            </button>
+            <div className="relative flex flex-col items-center gap-1 shrink-0">
+              <button
+                onClick={() => togglePlay()}
+                aria-label={isPlaying ? "Pausar" : "Reproducir"}
+                aria-pressed={isPlaying}
+                className={`w-11 h-11 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-md shrink-0 ${
+                  isPlaying
+                    ? "bg-gradient-to-br from-[#1e6b32] to-[#145a28] shadow-[#145a28]/45 ring-2 ring-white/40"
+                    : "bg-gradient-to-br from-[#34a853] to-[#28873f] shadow-[#34a853]/35"
+                }`}
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 text-white animate-spin" />
+                ) : isPlaying ? (
+                  <Pause className="w-5 h-5 text-white" fill="currentColor" />
+                ) : (
+                  <Play className="w-5 h-5 text-white ml-0.5" fill="currentColor" />
+                )}
+              </button>
+              {isLive && liveStreamError ? (
+                <p
+                  className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 w-56 text-center text-xs font-medium text-red-800/90 px-1"
+                  role="alert"
+                >
+                  {liveStreamError}
+                </p>
+              ) : null}
+            </div>
           </div>
 
           {!isLive && duration > 0 && (
