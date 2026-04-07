@@ -9,6 +9,7 @@ import {
   CoachesSection,
   UpcomingEventsSection,
   NewsletterSection,
+  SponsorCarousel,
 } from "@/components/home";
 
 function SectionDivider() {
@@ -62,6 +63,12 @@ export default function Home() {
 
       <FadeIn>
         <CoachesSection />
+      </FadeIn>
+
+      <SectionDivider />
+
+      <FadeIn>
+        <SponsorCarousel />
       </FadeIn>
 
       <SectionDivider />

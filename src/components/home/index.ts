@@ -6,3 +6,4 @@ export { RecentArticles } from "./RecentArticles";
 export { CoachesSection } from "./CoachesSection";
 export { UpcomingEventsSection } from "./UpcomingEventsSection";
 export { NewsletterSection } from "./NewsletterSection";
+export { SponsorCarousel } from "./SponsorCarousel";

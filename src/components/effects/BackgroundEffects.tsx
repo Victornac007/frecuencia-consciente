@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Image from "next/image";
 import { MysticWaves } from "./MysticWaves";
 import { LightLeaks } from "./LightLeaks";
 
@@ -160,7 +161,17 @@ function ZenWaveOverlays() {
 export function BackgroundEffects() {
   return (
     <>
-      <div className="zen-landscape" aria-hidden="true" />
+      <div className="fixed inset-0 -z-20 overflow-hidden pointer-events-none" aria-hidden="true">
+        <Image
+          src="/zen-bg.png"
+          alt="Zen Landscape Background"
+          fill
+          priority
+          className="object-cover object-[center_40%]"
+          sizes="100vw"
+          quality={85}
+        />
+      </div>
       <div className="zen-landscape-overlay" aria-hidden="true" />
 
       <div
