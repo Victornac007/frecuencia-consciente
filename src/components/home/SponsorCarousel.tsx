@@ -49,8 +49,54 @@ export function SponsorCarousel() {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [loadedVideos, setLoadedVideos] = useState<Record<number, boolean>>({});
+  const [isDragging, setIsDragging] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  const minSwipeDistance = 50;
+
+  // Touch Events for Mobile
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    
+    if (distance > minSwipeDistance) handleNext();
+    if (distance < -minSwipeDistance) handlePrev();
+  };
+
+  // Mouse Events for Desktop
+  const onMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setTouchEnd(null);
+    setTouchStart(e.clientX);
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    setTouchEnd(e.clientX);
+  };
+
+  const onMouseUpOrLeave = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    
+    if (distance > minSwipeDistance) handleNext();
+    if (distance < -minSwipeDistance) handlePrev();
+  };
 
   const handleVideoLoad = (index: number) => {
     setLoadedVideos(prev => ({ ...prev, [index]: true }));
@@ -104,9 +150,18 @@ export function SponsorCarousel() {
         </FadeIn>
 
         <div
-          className="relative group"
+          className={`relative group touch-pan-y ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            onMouseUpOrLeave();
+          }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUpOrLeave}
         >
           {/* Main Carousel Container */}
           <div className="flex justify-center items-center gap-4 md:gap-8 overflow-hidden py-10 px-4">
@@ -183,7 +238,7 @@ export function SponsorCarousel() {
           </div>
 
           {/* Controls */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-2 md:px-10 pointer-events-none">
+          <div className="absolute z-40 top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-2 md:px-10 pointer-events-none">
             <button
               onClick={handlePrev}
               className="w-12 h-12 rounded-full glass-interactive flex items-center justify-center text-text-primary hover:bg-brand-green/20 pointer-events-auto transition-transform active:scale-95"
