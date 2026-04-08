@@ -122,7 +122,7 @@ export function SponsorCarousel() {
                 <div
                   key={sponsor.id}
                   className={`relative transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] shrink-0 
-                  ${isCenter ? "w-full md:w-[60%] lg:w-[50%] z-20 scale-100 opacity-100" : "w-[15%] md:w-[20%] z-10 scale-90 opacity-40 blur-[2px] cursor-pointer"}`}
+                  ${isCenter ? "w-full md:w-[60%] lg:w-[50%] z-20 scale-100 opacity-100" : "w-[15%] md:w-[20%] z-10 scale-90 opacity-40 md:blur-[2px] cursor-pointer"}`}
                   onClick={() => !isCenter && setActiveIndex(index)}
                 >
                   <div className={`glass-interactive overflow-hidden h-[400px] md:h-[500px] border-2 transition-colors cursor-pointer

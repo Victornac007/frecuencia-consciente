@@ -1043,3 +1043,35 @@ body {
   width: 4px;
   height: 4px;
 }
+
+/* ───────────────────────────────────────────
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   ─────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Reduce heavy blurs on mobile devices */
+  .glass, .glass-strong, .glass-interactive, .section-title-island {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+  
+  .glass-interactive::before, .glass-strong::before {
+    filter: blur(6px) !important;
+  }
+
+  .zen-landscape-overlay {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  /* Simplify shadows for better GPU performance */
+  .glass-interactive:hover, .coach-card, .coach-card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    transform: none !important; /* Disable expensive translate on mobile hover */
+  }
+
+  /* Disable or tone down orb animations if they rely heavily on blur */
+  .orb {
+    filter: blur(40px) !important; /* Less blur computation */
+  }
+}
