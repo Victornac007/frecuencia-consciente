@@ -70,7 +70,7 @@ export function SponsorCarousel() {
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
-    
+
     if (distance > minSwipeDistance) handleNext();
     if (distance < -minSwipeDistance) handlePrev();
   };
@@ -90,10 +90,10 @@ export function SponsorCarousel() {
   const onMouseUpOrLeave = () => {
     if (!isDragging) return;
     setIsDragging(false);
-    
+
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
-    
+
     if (distance > minSwipeDistance) handleNext();
     if (distance < -minSwipeDistance) handlePrev();
   };

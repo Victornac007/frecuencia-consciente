@@ -151,10 +151,17 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       setIsPlaying(false);
       setCurrentTime(0);
     };
-    const onStreamProblem = () => {
+    const onStreamError = (e: Event) => {
+      const target = e.target as HTMLAudioElement;
+      console.error("Audio stream error:", target.error);
       setIsPlaying(false);
       setIsLoading(false);
       setLiveStreamError(STREAM_UNAVAILABLE_MSG);
+    };
+    
+    const onStalled = () => {
+      console.warn("Audio stream stalled, buffering...");
+      setIsLoading(true);
     };
 
     audio.addEventListener("play", onPlay);
@@ -165,8 +172,8 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("durationchange", onDurationChange);
     audio.addEventListener("ended", onEnded);
-    audio.addEventListener("error", onStreamProblem);
-    audio.addEventListener("stalled", onStreamProblem);
+    audio.addEventListener("error", onStreamError);
+    audio.addEventListener("stalled", onStalled);
 
     return () => {
       audio.removeEventListener("play", onPlay);
@@ -177,8 +184,8 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("durationchange", onDurationChange);
       audio.removeEventListener("ended", onEnded);
-      audio.removeEventListener("error", onStreamProblem);
-      audio.removeEventListener("stalled", onStreamProblem);
+      audio.removeEventListener("error", onStreamError);
+      audio.removeEventListener("stalled", onStalled);
       audio.pause();
       audio.removeAttribute("src");
       audio.load();
@@ -190,10 +197,23 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
     if (!audio) return;
     setLiveStreamError(null);
     setIsLoading(true);
-    audio.play().catch(() => {
+    
+    // Al intentar reproducir, forzamos recarga en caso de que sea un live stream que se desconectó
+    if (stateRef.current.currentTrack?.type === "live" && audio.readyState === 0) {
+      audio.load();
+    }
+
+    audio.play().catch((err) => {
+      console.error("Error attempting to play audio:", err);
       setIsPlaying(false);
       setIsLoading(false);
-      setLiveStreamError(STREAM_UNAVAILABLE_MSG);
+      
+      // Mostrar algo útil si es posible
+      const errorMsg = err.name === "NotAllowedError" 
+        ? "Reproducción bloqueada (toca play de nuevo)."
+        : STREAM_UNAVAILABLE_MSG;
+        
+      setLiveStreamError(errorMsg);
     });
   }, []);
 
